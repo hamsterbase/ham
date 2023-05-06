@@ -1,0 +1,10 @@
+{
+  "name": "@hamsterbase/ham",
+  "version": "0.1.0",
+  "bin": {
+    "ham": "./bin/ham.js"
+  },
+  "repository": "https://github.com/hamsterbase/ham.git",
+  "author": "monster <monster@hamsterbase.com>",
+  "license": "MIT"
+}

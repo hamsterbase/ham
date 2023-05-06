@@ -1,2 +1,3 @@
 # ham
-hamster addons manager
+
+**h**amster **a**ddons **m**anager
