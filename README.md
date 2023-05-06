@@ -1,0 +1,2 @@
+# ham
+hamster addons manager
