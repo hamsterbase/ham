@@ -1,6 +1,6 @@
 export type AddonPlatform = "linux" | "win32" | "darwin";
 
-export type AddonArch = "x64" | "arm64";
+export type AddonArch = "x64" | "arm64" | "x86";
 
 export type AddonTarget = {
   arch: AddonArch;

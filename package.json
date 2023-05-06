@@ -11,8 +11,10 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "cli-table": "^0.3.11",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.0"
+    "vitest": "^0.31.0",
+    "@types/cli-table": "^0.3.1"
   },
   "dependencies": {
     "cac": "^6.7.14"
