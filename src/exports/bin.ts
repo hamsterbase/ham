@@ -26,7 +26,8 @@ ham
 ham
   .command("install", "Install all addon")
   .option("--config <configPath>", "ham config path")
-  .option("--force", "ham config path")
+  .option("--force", "force install")
+  .option("--type <addonType>", "addon type")
   .action(async (options) => {
     const configPath = options.config || defaultConfigPath;
     try {
@@ -36,6 +37,11 @@ ham
       const addons = (config.addons ?? []).filter((o) => {
         if (o.type === "binary") {
           return false;
+        }
+        if (options.type) {
+          if (o.type !== options.type) {
+            return false;
+          }
         }
         return true;
       });

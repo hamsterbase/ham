@@ -46,6 +46,7 @@
     "vitest": "^0.31.0"
   },
   "dependencies": {
+    "electron-rebuild": "^3.2.9",
     "tar": "^6.1.14"
   }
 }

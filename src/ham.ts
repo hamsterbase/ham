@@ -19,6 +19,20 @@ import { extractTgz, packAndCopy } from "./utils/compressing.js";
 import { createTempDir } from "./utils/create-temp-dir.js";
 import { guessAddonTarget } from "./utils/guess-target.js";
 
+import { createRequire } from "node:module";
+
+function getRequireResolve() {
+  if (globalThis.require?.resolve) {
+    return globalThis.require.resolve;
+  }
+  const require = createRequire(import.meta.url);
+  return require.resolve;
+}
+
+function resolveElectronRebuild() {
+  return getRequireResolve()("electron-rebuild/lib/src/cli.js");
+}
+
 export interface IHamInstance {
   currentTarget: AddonTarget;
 
@@ -108,13 +122,20 @@ export class Ham implements IHamInstance {
     }
     switch (type) {
       case "node": {
-        await this.installNodeAddon(addon as NodeAddon, addonTarget);
+        await this.addonInstallPrepare(addon as NodeAddon, addonTarget);
+        break;
+      }
+      case "electron": {
+        await this.addonInstallPrepare(addon as ElectronAddon, addonTarget);
         break;
       }
     }
   }
 
-  private async installNodeAddon(addon: NodeAddon, addonTarget: AddonTarget) {
+  private async addonInstallPrepare(
+    addon: NodeAddon | ElectronAddon,
+    addonTarget: AddonTarget
+  ) {
     if (
       addonTarget.arch !== os.arch() ||
       addonTarget.platform !== os.platform()
@@ -131,22 +152,47 @@ export class Ham implements IHamInstance {
         dependencies: addon.dependencies,
       })
     );
+    // step 1 : install
     const config = await this.getConfig();
     let command =
       "npm i --global-style --registry=https://registry.npmmirror.com";
     if (config.npm?.registry) {
       command = `${command} --registry=${config.npm.registry}`;
     }
+    if (addon.type === "electron") {
+      command = `${command} --ignore-scripts`;
+    }
     cp.execSync(command, {
       cwd: tmpdir.tempDir,
       stdio: "inherit",
     });
 
-    const addonRoot = resolve(tmpdir.tempDir, "node_modules");
+    // step 2 : patch
     await this.runPatchScript(addon, tmpdir.tempDir);
+
+    if (addon.type === "electron") {
+      const electronAddon = addon as ElectronAddon;
+      const args = [
+        resolveElectronRebuild(),
+        "-f",
+        "-m",
+        tmpdir.tempDir,
+        "-b",
+        electronAddon.electronVersion,
+        "--arch",
+        addonTarget.arch,
+      ];
+      console.log("run script", "node ", args.join(" "));
+      cp.execFileSync("node", args, {
+        stdio: "inherit",
+      });
+    }
+
+    // step 3 : pack
+    const addonRoot = resolve(tmpdir.tempDir, "node_modules");
     await packAndCopy(
       addonRoot,
-      await this.getAddonPath("node", addon.name, addonTarget)
+      await this.getAddonPath(addon.type, addon.name, addonTarget)
     );
   }
 
