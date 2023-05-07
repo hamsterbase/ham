@@ -1,7 +1,7 @@
 import fs from "fs/promises";
+import path from "path";
 import { expect, it } from "vitest";
 import { createTempDir } from "./create-temp-dir.js";
-import path from "path";
 
 it("test createTempDir", async () => {
   const { tempDir, clean } = await createTempDir();

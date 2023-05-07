@@ -1,7 +1,7 @@
 import { cac } from "cac";
+import fs from "fs/promises";
 import { join } from "path";
 import { Ham } from "../ham.js";
-import fs from "fs/promises";
 
 const ham = cac("ham");
 

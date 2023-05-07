@@ -1,4 +1,4 @@
-import { AddonPlatform, AddonArch, AddonTarget } from "../config";
+import { AddonArch, AddonPlatform, AddonTarget } from "../config.js";
 
 const platformRegex: Record<AddonPlatform, RegExp[]> = {
   darwin: [/darwin/, /^osx$/],

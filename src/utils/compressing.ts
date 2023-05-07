@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import tar from "tar";
 import path from "path";
+import tar from "tar";
 
 export async function packAndCopy(sourceDir: string, target: string) {
   const stat = await fs.stat(sourceDir);

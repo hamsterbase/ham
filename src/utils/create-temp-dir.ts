@@ -1,6 +1,6 @@
-import { join } from "path";
 import fs from "fs/promises";
 import os from "os";
+import { join } from "path";
 
 export interface TempDirResult {
   tempDir: string;
