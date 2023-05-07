@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "electron-rebuild": "^3.2.9",
+    "minimatch": "^9.0.0",
     "tar": "^6.1.14"
   }
 }

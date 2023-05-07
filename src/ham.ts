@@ -192,7 +192,8 @@ export class Ham implements IHamInstance {
     const addonRoot = resolve(tmpdir.tempDir, "node_modules");
     await packAndCopy(
       addonRoot,
-      await this.getAddonPath(addon.type, addon.name, addonTarget)
+      await this.getAddonPath(addon.type, addon.name, addonTarget),
+      addon.filter
     );
   }
 

@@ -1,8 +1,14 @@
 import fs from "fs/promises";
+import { minimatch } from "minimatch";
 import path from "path";
 import tar from "tar";
+import { FilterConfig } from "../config.js";
 
-export async function packAndCopy(sourceDir: string, target: string) {
+export async function packAndCopy(
+  sourceDir: string,
+  target: string,
+  filterOption?: FilterConfig
+) {
   const stat = await fs.stat(sourceDir);
   if (!stat.isDirectory()) {
     throw new Error(`${sourceDir} is not a directory`);
@@ -21,6 +27,17 @@ export async function packAndCopy(sourceDir: string, target: string) {
       portable: true,
       gzip: true,
       cwd: sourceDir,
+      filter: (path) => {
+        const includeConfig = filterOption?.include ?? [];
+        const excludeConfig = filterOption?.exclude ?? [];
+        if (includeConfig.some((x) => minimatch(path, x))) {
+          return true;
+        }
+        if (excludeConfig.some((x) => minimatch(path, x))) {
+          return false;
+        }
+        return true;
+      },
     },
     files.map((p) => `./${p}`)
   );

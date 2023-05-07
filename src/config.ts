@@ -7,12 +7,18 @@ export type AddonTarget = {
   platform: AddonPlatform;
 };
 
+export type FilterConfig = {
+  exclude?: string[];
+  include?: string[];
+};
+
 export type ElectronAddon = {
   type: "electron";
   name: string;
   electronVersion: string;
   dependencies: Record<string, string>;
   patch?: string;
+  filter?: FilterConfig;
 };
 
 export type NodeAddon = {
@@ -22,6 +28,7 @@ export type NodeAddon = {
   // major version
   nodeVersion: number;
   patch?: string;
+  filter?: FilterConfig;
 };
 
 export type BinaryAddon = {
