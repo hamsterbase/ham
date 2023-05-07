@@ -4,6 +4,10 @@
   "bin": {
     "ham": "./bin/ham.js"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "main": "./dist/exports/ham.cjs",
   "types": "./dist/exports/ham.d.ts",
   "type": "module",
