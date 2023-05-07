@@ -133,7 +133,7 @@ export class Ham implements IHamInstance {
     );
     const config = await this.getConfig();
     let command =
-      "npm i  --ignore-scripts --global-style --registry=https://registry.npmmirror.com";
+      "npm i --global-style --registry=https://registry.npmmirror.com";
     if (config.npm?.registry) {
       command = `${command} --registry=${config.npm.registry}`;
     }

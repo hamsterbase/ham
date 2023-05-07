@@ -38,4 +38,13 @@ const output = path.join(projectRoot, "dist");
     external: ["tar"],
     outfile: join(projectRoot, "dist/exports/ham.cjs"),
   });
+  await esbuild.build({
+    entryPoints: [join(projectRoot, "src/exports/ham.ts")],
+    bundle: true,
+    platform: "node",
+    format: "esm",
+    target: "node16",
+    external: ["tar"],
+    outfile: join(projectRoot, "dist/exports/ham.mjs"),
+  });
 })();

@@ -28,6 +28,10 @@
       "require": {
         "types": "./dist/exports/ham.d.ts",
         "default": "./dist/exports/ham.cjs"
+      },
+      "import": {
+        "types": "./dist/exports/ham.d.ts",
+        "default": "./dist/exports/ham.mjs"
       }
     }
   },
