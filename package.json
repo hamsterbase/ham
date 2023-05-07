@@ -20,6 +20,7 @@
   "author": "monster <monster@hamsterbase.com>",
   "scripts": {
     "build": "node script/build.js",
+    "prepublishOnly": "node script/build.js",
     "test": "vitest run"
   },
   "exports": {
