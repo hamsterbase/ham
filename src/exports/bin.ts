@@ -23,6 +23,30 @@ ham
     }
   });
 
+ham
+  .command("install", "Install all addon")
+  .option("--config <configPath>", "ham config path")
+  .action(async (options) => {
+    const configPath = options.config || defaultConfigPath;
+    try {
+      await fs.access(configPath);
+      const ham = Ham.create(configPath);
+      const config = await ham.getConfig();
+      const addons = (config.addons ?? []).filter((o) => {
+        if (o.type === "binary") {
+          return false;
+        }
+        return true;
+      });
+      for (const addon of addons) {
+        await ham.installAddon(addon.type, addon.name);
+      }
+    } catch (error) {
+      console.log((error as Error).message);
+      process.exit(1);
+    }
+  });
+
 (async () => {
   try {
     ham.help();

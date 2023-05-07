@@ -21,6 +21,9 @@ import { guessAddonTarget } from "./utils/guess-target.js";
 
 export interface IHamInstance {
   currentTarget: AddonTarget;
+
+  getConfig(): Promise<HamsterAddonManagerConfig>;
+
   importBinaryAddon(
     addonName: string,
     addonDir: string,
@@ -78,7 +81,7 @@ export class Ham implements IHamInstance {
 
   private constructor(private configPath: string) {}
 
-  private async getConfig(): Promise<HamsterAddonManagerConfig> {
+  async getConfig(): Promise<HamsterAddonManagerConfig> {
     return JSON.parse(await fs.readFile(this.configPath, "utf-8"));
   }
 
