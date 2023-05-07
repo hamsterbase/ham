@@ -20,6 +20,7 @@ import { createTempDir } from "./utils/create-temp-dir.js";
 import { guessAddonTarget } from "./utils/guess-target.js";
 
 export interface IHamInstance {
+  currentTarget: AddonTarget;
   importBinaryAddon(
     addonName: string,
     addonDir: string,
@@ -41,6 +42,13 @@ export interface IHamInstance {
 }
 
 export class Ham implements IHamInstance {
+  get currentTarget(): AddonTarget {
+    return {
+      arch: os.arch() as AddonArch,
+      platform: os.platform() as AddonPlatform,
+    };
+  }
+
   static create(hamConfigPath: string): IHamInstance {
     return new Ham(hamConfigPath);
   }
@@ -52,6 +60,19 @@ export class Ham implements IHamInstance {
     dir: string
   ): Promise<void> {
     const addonTarget = await this.getAddonPath(type, addonName, target);
+    // if addon not exist, install it
+    if (!ofs.existsSync(addonTarget)) {
+      switch (type) {
+        case "binary": {
+          throw new Error("binary addon not found");
+        }
+        case "node":
+        case "electron": {
+          await this.installAddon(type, addonName);
+          break;
+        }
+      }
+    }
     return extractTgz(addonTarget, dir);
   }
 
@@ -253,6 +274,10 @@ export class Ham implements IHamInstance {
       .map((key) => `${key}@${deps[key]}`)
       .join(",");
 
-    return crypto.createHash("md5").update(depsString).digest("hex");
+    return crypto
+      .createHash("md5")
+      .update(depsString)
+      .digest("hex")
+      .slice(0, 10);
   }
 }
