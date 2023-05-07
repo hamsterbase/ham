@@ -12,6 +12,7 @@ export type ElectronAddon = {
   name: string;
   electronVersion: string;
   dependencies: Record<string, string>;
+  patch?: string;
 };
 
 export type NodeAddon = {
@@ -20,6 +21,7 @@ export type NodeAddon = {
   dependencies: Record<string, string>;
   // major version
   nodeVersion: number;
+  patch?: string;
 };
 
 export type BinaryAddon = {

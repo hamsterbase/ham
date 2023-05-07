@@ -26,6 +26,7 @@ ham
 ham
   .command("install", "Install all addon")
   .option("--config <configPath>", "ham config path")
+  .option("--force", "ham config path")
   .action(async (options) => {
     const configPath = options.config || defaultConfigPath;
     try {
@@ -39,7 +40,7 @@ ham
         return true;
       });
       for (const addon of addons) {
-        await ham.installAddon(addon.type, addon.name);
+        await ham.installAddon(addon.type, addon.name, options.force ?? false);
       }
     } catch (error) {
       console.log((error as Error).message);

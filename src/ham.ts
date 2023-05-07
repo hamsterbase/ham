@@ -3,7 +3,7 @@ import crypto from "crypto";
 import ofs from "fs";
 import fs from "fs/promises";
 import os from "os";
-import { basename, dirname, join, resolve } from "path";
+import path, { basename, dirname, join, resolve } from "path";
 import {
   AddonArch,
   AddonPlatform,
@@ -143,10 +143,38 @@ export class Ham implements IHamInstance {
     });
 
     const addonRoot = resolve(tmpdir.tempDir, "node_modules");
+    await this.runPatchScript(addon, tmpdir.tempDir);
     await packAndCopy(
       addonRoot,
       await this.getAddonPath("node", addon.name, addonTarget)
     );
+  }
+
+  private async runPatchScript(
+    addon: NodeAddon | ElectronAddon,
+    dir: string
+  ): Promise<void> {
+    if (!addon.patch) {
+      return;
+    }
+    const patchScriptPath = path.resolve(
+      path.dirname(this.configPath),
+      addon.patch
+    );
+    const process = cp.fork(patchScriptPath, {
+      cwd: dir,
+      env: {
+        HAM_PATCH_ADDON_TYPE: addon.type,
+        HAM_PATCH_ADDON_NAME: addon.name,
+        HAM_PATCH_ADDON_DIR: dir,
+      },
+      stdio: "inherit",
+    });
+    return new Promise((r) => {
+      process.on("exit", () => {
+        r();
+      });
+    });
   }
 
   private async getLock() {
