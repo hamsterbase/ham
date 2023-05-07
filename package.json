@@ -4,10 +4,12 @@
   "bin": {
     "ham": "./bin/ham.js"
   },
+  "type": "module",
   "repository": "https://github.com/hamsterbase/ham.git",
   "author": "monster <monster@hamsterbase.com>",
   "scripts": {
-    "build": "tsc"
+    "build": "node script/build.js",
+    "test": "vitest run"
   },
   "license": "MIT",
   "devDependencies": {
@@ -15,10 +17,11 @@
     "@types/tar": "^6.1.4",
     "cli-table": "^0.3.11",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.0"
+    "vitest": "^0.31.0",
+    "cac": "^6.7.14",
+    "esbuild": "^0.17.18"
   },
   "dependencies": {
-    "cac": "^6.7.14",
     "tar": "^6.1.14"
   }
 }

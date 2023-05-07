@@ -1,4 +1,4 @@
-import { guessAddonTarget } from "./guess-target";
+import { guessAddonTarget } from "./guess-target.js";
 import { expect, it } from "vitest";
 
 import Table from "cli-table";

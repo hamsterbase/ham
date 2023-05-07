@@ -1,8 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { TempDirResult, createTempDir } from "./create-temp-dir";
-import { packAndCopy, extractTgz } from "./compressing";
+import { TempDirResult, createTempDir } from "./create-temp-dir.js";
+import { packAndCopy, extractTgz } from "./compressing.js";
 import tar from "tar";
 
 const getEntryFilenames = async (tarName: string): Promise<string[]> => {
