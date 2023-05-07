@@ -4,12 +4,22 @@
   "bin": {
     "ham": "./bin/ham.js"
   },
+  "main": "./dist/exports/ham.cjs",
+  "types": "./dist/exports/ham.d.ts",
   "type": "module",
   "repository": "https://github.com/hamsterbase/ham.git",
   "author": "monster <monster@hamsterbase.com>",
   "scripts": {
     "build": "node script/build.js",
     "test": "vitest run"
+  },
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/exports/ham.d.ts",
+        "default": "./dist/exports/ham.cjs"
+      }
+    }
   },
   "license": "MIT",
   "devDependencies": {

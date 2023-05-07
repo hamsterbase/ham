@@ -1,8 +1,8 @@
 import cp from "child_process";
+import esbuild from "esbuild";
 import fs from "fs/promises";
 import path, { join } from "path";
 import { fileURLToPath } from "url";
-import esbuild from "esbuild";
 
 const projectRoot = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -19,7 +19,7 @@ const output = path.join(projectRoot, "dist");
     cwd: projectRoot,
   });
 
-  esbuild.build({
+  await esbuild.build({
     entryPoints: [join(projectRoot, "src/exports/bin.ts")],
     bundle: true,
     platform: "node",
@@ -27,5 +27,15 @@ const output = path.join(projectRoot, "dist");
     target: "node16",
     external: ["tar"],
     outfile: join(projectRoot, "dist/exports/bin.mjs"),
+  });
+
+  await esbuild.build({
+    entryPoints: [join(projectRoot, "src/exports/ham.ts")],
+    bundle: true,
+    platform: "node",
+    format: "cjs",
+    target: "node16",
+    external: ["tar"],
+    outfile: join(projectRoot, "dist/exports/ham.cjs"),
   });
 })();

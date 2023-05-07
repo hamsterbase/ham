@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import fs from "fs/promises";
 import os from "os";
-import { basename, join, resolve, dirname } from "path";
+import { basename, dirname, join, resolve } from "path";
 import {
   AddonTarget,
   AddonType,
@@ -11,8 +11,8 @@ import {
   HamsterAddonManagerConfig,
   NodeAddon,
 } from "./config.js";
+import { extractTgz, packAndCopy } from "./utils/compressing.js";
 import { guessAddonTarget } from "./utils/guess-target.js";
-import { packAndCopy } from "./utils/compressing.js";
 
 export interface IHamInstance {
   importBinaryAddon(
@@ -20,11 +20,28 @@ export interface IHamInstance {
     addonDir: string,
     target?: AddonTarget
   ): void;
+
+  ensureAddon(
+    type: AddonType,
+    addonName: string,
+    target: AddonTarget,
+    dir: string
+  ): Promise<void>;
 }
 
 export class Ham implements IHamInstance {
-  static create(hamConfigPath: string) {
+  static create(hamConfigPath: string): IHamInstance {
     return new Ham(hamConfigPath);
+  }
+
+  async ensureAddon(
+    type: AddonType,
+    addonName: string,
+    target: AddonTarget,
+    dir: string
+  ): Promise<void> {
+    const addonTarget = await this.getAddonPath(type, addonName, target);
+    return extractTgz(addonTarget, dir);
   }
 
   private constructor(private configPath: string) {}
