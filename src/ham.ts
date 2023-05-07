@@ -1,8 +1,12 @@
+import cp from "child_process";
 import crypto from "crypto";
+import ofs from "fs";
 import fs from "fs/promises";
 import os from "os";
 import { basename, dirname, join, resolve } from "path";
 import {
+  AddonArch,
+  AddonPlatform,
   AddonTarget,
   AddonType,
   AddonWithType,
@@ -12,6 +16,7 @@ import {
   NodeAddon,
 } from "./config.js";
 import { extractTgz, packAndCopy } from "./utils/compressing.js";
+import { createTempDir } from "./utils/create-temp-dir.js";
 import { guessAddonTarget } from "./utils/guess-target.js";
 
 export interface IHamInstance {
@@ -26,6 +31,12 @@ export interface IHamInstance {
     addonName: string,
     target: AddonTarget,
     dir: string
+  ): Promise<void>;
+
+  installAddon(
+    type: AddonType,
+    addonName: string,
+    force?: boolean
   ): Promise<void>;
 }
 
@@ -52,6 +63,66 @@ export class Ham implements IHamInstance {
 
   private async writeConfig(config: HamsterAddonManagerConfig) {
     await fs.writeFile(this.configPath, JSON.stringify(config, null, 2));
+  }
+
+  async installAddon(
+    type: AddonType,
+    addonName: string,
+    force?: boolean
+  ): Promise<void> {
+    const addon = await this.getAddon(type, addonName);
+    if (!addon) {
+      throw new Error(`${type} addon ${addonName} not found`);
+    }
+    const addonTarget: AddonTarget = {
+      arch: os.arch() as AddonArch,
+      platform: os.platform() as AddonPlatform,
+    };
+    const addonPath = await this.getAddonPath(type, addonName, addonTarget);
+    if (ofs.existsSync(addonPath) && !force) {
+      return;
+    }
+    switch (type) {
+      case "node": {
+        await this.installNodeAddon(addon as NodeAddon, addonTarget);
+        break;
+      }
+    }
+  }
+
+  private async installNodeAddon(addon: NodeAddon, addonTarget: AddonTarget) {
+    if (
+      addonTarget.arch !== os.arch() ||
+      addonTarget.platform !== os.platform()
+    ) {
+      throw new Error("arch or platform mismatch");
+    }
+    const tmpdir = await createTempDir();
+    await fs.writeFile(
+      resolve(tmpdir.tempDir, "package.json"),
+      JSON.stringify({
+        name: addon.name,
+        version: "1.0.0",
+        license: "MIT",
+        dependencies: addon.dependencies,
+      })
+    );
+    const config = await this.getConfig();
+    let command =
+      "npm i  --ignore-scripts --global-style --registry=https://registry.npmmirror.com";
+    if (config.npm?.registry) {
+      command = `${command} --registry=${config.npm.registry}`;
+    }
+    cp.execSync(command, {
+      cwd: tmpdir.tempDir,
+      stdio: "inherit",
+    });
+
+    const addonRoot = resolve(tmpdir.tempDir, "node_modules");
+    await packAndCopy(
+      addonRoot,
+      await this.getAddonPath("node", addon.name, addonTarget)
+    );
   }
 
   private async getLock() {

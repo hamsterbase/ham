@@ -39,4 +39,5 @@ export type AddonWithType<T extends AddonType> = FilterByType<Addon, T>;
 export type HamsterAddonManagerConfig = {
   addons?: Addon[];
   base: string;
+  npm?: { registry?: string };
 };
