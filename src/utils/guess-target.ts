@@ -1,7 +1,7 @@
 import { AddonArch, AddonPlatform, AddonTarget } from "../config.js";
 
 const platformRegex: Record<AddonPlatform, RegExp[]> = {
-  darwin: [/darwin/, /^osx$/],
+  darwin: [/darwin/, /^osx$/, /macos/],
   linux: [/linux/],
   win32: [/win32/, /^win$/, /windows/],
 };
