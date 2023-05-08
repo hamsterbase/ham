@@ -45,14 +45,21 @@ export async function packAndCopy(
 
 /**
  *
- * @param source source tgz gile
+ * @param source source tgz file
  * @param targetDir target dir (will be created if not exists, will be cleaned if exists)
  */
 export async function extractTgz(source: string, targetDir: string) {
   if (targetDir === "/") {
     throw new Error("targetDir can not be /");
   }
-  await fs.rm(targetDir, { recursive: true });
+  try {
+    await fs.rm(targetDir, { recursive: true });
+  } catch (error) {
+    // ignore not found error
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+      throw error;
+    }
+  }
   await fs.mkdir(targetDir, { recursive: true });
   await tar.x({
     cwd: targetDir,
