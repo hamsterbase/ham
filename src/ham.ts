@@ -30,7 +30,7 @@ function getRequireResolve() {
 }
 
 function resolveElectronRebuild() {
-  return getRequireResolve()("electron-rebuild/lib/src/cli.js");
+  return getRequireResolve()("@electron/rebuild/lib/cli.js");
 }
 
 export interface IHamInstance {

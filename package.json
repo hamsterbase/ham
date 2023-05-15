@@ -46,7 +46,7 @@
     "vitest": "^0.31.0"
   },
   "dependencies": {
-    "electron-rebuild": "^3.2.9",
+    "@electron/rebuild": "^3.2.13",
     "minimatch": "^9.0.0",
     "tar": "^6.1.14"
   }
