@@ -178,7 +178,7 @@ export class Ham implements IHamInstance {
         "-f",
         "-m",
         tmpdir.tempDir,
-        "-b",
+        "-v",
         electronAddon.electronVersion,
         "--arch",
         addonTarget.arch,
