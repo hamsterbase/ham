@@ -90,7 +90,8 @@ export class Ham implements IHamInstance {
         }
       }
     }
-    return extractTgz(addonTarget, dir);
+    const addon = await this.getAddon(type, addonName);
+    return extractTgz(addonTarget, dir, addon?.extractFilter);
   }
 
   private constructor(private configPath: string) {}

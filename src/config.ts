@@ -19,6 +19,7 @@ export type ElectronAddon = {
   dependencies: Record<string, string>;
   patch?: string;
   filter?: FilterConfig;
+  extractFilter?: FilterConfig;
 };
 
 export type NodeAddon = {
@@ -29,12 +30,14 @@ export type NodeAddon = {
   nodeVersion: number;
   patch?: string;
   filter?: FilterConfig;
+  extractFilter?: FilterConfig;
 };
 
 export type BinaryAddon = {
   type: "binary";
   name: string;
   targets: AddonTarget[];
+  extractFilter?: FilterConfig;
 };
 
 export type Addon = ElectronAddon | NodeAddon | BinaryAddon;

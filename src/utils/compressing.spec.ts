@@ -41,16 +41,25 @@ describe("test compressing", () => {
   });
 
   it("test extractTgz", async () => {
-    for (const fileName of ["1", "2", "3"]) {
+    for (const fileName of ["1", "2", "3", ".bin/a", ".bin/b", ".ignore/a"]) {
+      await fs.mkdir(path.dirname(path.join(sourceTmpDir.tempDir, fileName)), {
+        recursive: true,
+      });
       await fs.writeFile(path.join(sourceTmpDir.tempDir, fileName), "");
     }
-
     const result = path.join(distTmpDir.tempDir, "a.tgz");
     await packAndCopy(sourceTmpDir.tempDir, result);
-
     const extractDir = await createTempDir();
-    await extractTgz(result, extractDir.tempDir);
-    expect(await fs.readdir(extractDir.tempDir)).toEqual(["1", "2", "3"]);
+    await extractTgz(result, extractDir.tempDir, {
+      include: ["./.bin", "./.bin/a"],
+      exclude: ["./.bin/b", "./.ignore", "./.ignore/*"],
+    });
+    expect(await fs.readdir(extractDir.tempDir)).toEqual([
+      ".bin",
+      "1",
+      "2",
+      "3",
+    ]);
     await extractDir.clean();
   });
 });

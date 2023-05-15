@@ -4,6 +4,20 @@ import path from "path";
 import tar from "tar";
 import { FilterConfig } from "../config.js";
 
+function filterOptionToFilter(filterOption?: FilterConfig) {
+  return (filePath: string) => {
+    const includeConfig = filterOption?.include ?? [];
+    const excludeConfig = filterOption?.exclude ?? [];
+    if (includeConfig.some((x) => minimatch(filePath, x))) {
+      return true;
+    }
+    if (excludeConfig.some((x) => minimatch(filePath, x))) {
+      return false;
+    }
+    return true;
+  };
+}
+
 export async function packAndCopy(
   sourceDir: string,
   target: string,
@@ -27,17 +41,7 @@ export async function packAndCopy(
       portable: true,
       gzip: true,
       cwd: sourceDir,
-      filter: (path) => {
-        const includeConfig = filterOption?.include ?? [];
-        const excludeConfig = filterOption?.exclude ?? [];
-        if (includeConfig.some((x) => minimatch(path, x))) {
-          return true;
-        }
-        if (excludeConfig.some((x) => minimatch(path, x))) {
-          return false;
-        }
-        return true;
-      },
+      filter: filterOptionToFilter(filterOption),
     },
     files.map((p) => `./${p}`)
   );
@@ -48,7 +52,11 @@ export async function packAndCopy(
  * @param source source tgz file
  * @param targetDir target dir (will be created if not exists, will be cleaned if exists)
  */
-export async function extractTgz(source: string, targetDir: string) {
+export async function extractTgz(
+  source: string,
+  targetDir: string,
+  filterOption?: FilterConfig
+) {
   if (targetDir === "/") {
     throw new Error("targetDir can not be /");
   }
@@ -64,5 +72,6 @@ export async function extractTgz(source: string, targetDir: string) {
   await tar.x({
     cwd: targetDir,
     file: source,
+    filter: filterOptionToFilter(filterOption),
   });
 }
