@@ -156,7 +156,7 @@ export class Ham implements IHamInstance {
     // step 1 : install
     const config = await this.getConfig();
     let command =
-      "npm i --global-style --registry=https://registry.npmmirror.com";
+      "npm i --no-bin-links --global-style --registry=https://registry.npmmirror.com";
     if (config.npm?.registry) {
       command = `${command} --registry=${config.npm.registry}`;
     }
