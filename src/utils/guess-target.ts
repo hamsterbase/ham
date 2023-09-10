@@ -4,12 +4,14 @@ const platformRegex: Record<AddonPlatform, RegExp[]> = {
   darwin: [/darwin/, /^osx$/, /macos/],
   linux: [/linux/],
   win32: [/win32/, /^win$/, /windows/],
+  interplatform: [/interplatform/],
 };
 
 const archRegex: Record<AddonArch, RegExp[]> = {
   x64: [/x64/],
   arm64: [/arm64/],
   x86: [/x86/],
+  interarchitecture: [/interarchitecture/],
 };
 
 /**

@@ -17,6 +17,7 @@ it("test guessAddonTarget", () => {
     "win-x64",
     "linux-x64",
     "macos-x64",
+    "interplatform-interarchitecture",
   ].map((o) => {
     const target = guessAddonTarget(o);
     return [o, target?.arch ?? "", target?.platform ?? ""];
@@ -57,6 +58,8 @@ it("test guessAddonTarget", () => {
     │ linux-x64                                                  │ x64                │ linux              │
     ├────────────────────────────────────────────────────────────┼────────────────────┼────────────────────┤
     │ macos-x64                                                  │ x64                │ darwin             │
+    ├────────────────────────────────────────────────────────────┼────────────────────┼────────────────────┤
+    │ interplatform-interarchitecture                            │ interarchitecture  │ interplatform      │
     └────────────────────────────────────────────────────────────┴────────────────────┴────────────────────┘
     "
   `);
