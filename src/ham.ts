@@ -38,11 +38,7 @@ export interface IHamInstance {
 
   getConfig(): Promise<HamsterAddonManagerConfig>;
 
-  importBinaryAddon(
-    addonName: string,
-    addonDir: string,
-    target?: AddonTarget
-  ): void;
+  importBinaryAddon(addonName: string, addonDir: string, target?: string): void;
 
   ensureAddon(
     type: AddonType,
@@ -245,9 +241,9 @@ export class Ham implements IHamInstance {
   async importBinaryAddon(
     addonName: string,
     addonDir: string,
-    target?: AddonTarget
+    target?: string
   ) {
-    const addonTarget = target ?? guessAddonTarget(basename(addonDir));
+    const addonTarget = guessAddonTarget(target ?? basename(addonDir));
     if (!addonTarget) {
       throw new Error(`can not guess addon target from ${addonDir}`);
     }
