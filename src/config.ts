@@ -1,4 +1,11 @@
-export type AddonPlatform = "linux" | "win32" | "darwin" | "interplatform";
+export type AddonPlatform =
+  | "linux"
+  | "win32"
+  | "darwin"
+  | "interplatform"
+  | "ios"
+  | "android"
+  | "iphonesimulator";
 
 export type AddonArch = "x64" | "arm64" | "x86" | "interarchitecture";
 

@@ -5,6 +5,9 @@ const platformRegex: Record<AddonPlatform, RegExp[]> = {
   linux: [/linux/],
   win32: [/win32/, /^win$/, /windows/],
   interplatform: [/interplatform/],
+  ios: [/ios/],
+  android: [/android/],
+  iphonesimulator: [/iphonesimulator/],
 };
 
 const archRegex: Record<AddonArch, RegExp[]> = {
